@@ -7,6 +7,7 @@ Main features
 -------------
 
 - Reading and writing legacy collection files
+- Reading replay files
 
 Installation
 ------------
