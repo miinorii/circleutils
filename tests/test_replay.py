@@ -2,7 +2,7 @@ import unittest
 from circleutils import Replay
 
 
-SAMPLE_REPLAY = "replay-osu_1278814_2481474922.osr"
+SAMPLE_REPLAY = "ressources/replay-osu_1278814_2481474922.osr"
 
 
 class TestReplay(unittest.TestCase):
