@@ -100,17 +100,3 @@ class Spinner:
                 "odd": odd_rot_req
             }))
         return data
-
-        # return pl.concat([spinner_df, pl.DataFrame({
-        #     "length": length,
-        #     "accel_max": accel_max,
-        #     "accel_adjusted": accel_adjusted,
-        #     "rot_req": rot_req,
-        #     "max_rot": max_rot,
-        #     "leeway": leeways,
-        #     "total": total,
-        #     "amount": amount,
-        #     "extra_100": extra_100,
-        #     "odd": odd_rot_req
-        # })], how="horizontal")
-        pass
