@@ -7,7 +7,9 @@ Main features
 -------------
 
 - Reading and writing legacy collection files
-- Reading replay files
+- Reading replay files (.osr)
+- Leeway calculation
+- [WIP] Reading beatmap files (.osu)
 
 Installation
 ------------
