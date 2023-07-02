@@ -6,7 +6,7 @@ setup(
     version="2023.7.1",
     packages=["circleutils"],
     install_requires=[
-        "pydantic==1.10.9",
+        "pydantic==2.0",
         "numpy",
         "pandas"
     ]
