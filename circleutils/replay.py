@@ -1,17 +1,10 @@
 from __future__ import annotations
 from .utils import from_string_data
+from .types import GameModeInt
 from pydantic import BaseModel
-from enum import Enum
 import lzma
 import numpy as np
 import pandas as pd
-
-
-class GameModeInt(Enum):
-    OSU = 0
-    TAIKO = 1
-    FRUITS = 2
-    MANIA = 3
 
 
 class ReplayData(BaseModel):
@@ -34,7 +27,7 @@ class ReplayData(BaseModel):
         )
 
 
-class Replay(BaseModel):
+class OSRFile(BaseModel):
     gamemode: GameModeInt
     version: int
     map_hash: str
@@ -57,8 +50,8 @@ class Replay(BaseModel):
     score_id: int
     extra: int | None
 
-    @staticmethod
-    def read(filepath) -> Replay:
+    @classmethod
+    def read(cls, filepath) -> OSRFile:
         with open(filepath, "rb") as f:
             osr = f.read()
         gamemode = osr[0]
@@ -141,7 +134,7 @@ class Replay(BaseModel):
         if len(osr[offset:]) > 0:
             extra = int.from_bytes(osr[offset:], byteorder="little")
 
-        return Replay(
+        return cls(
             gamemode=gamemode,
             version=version,
             map_hash=map_hash,

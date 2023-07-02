@@ -1,3 +1,18 @@
+from functools import lru_cache
+
+
+@lru_cache
+def convert_to_snake_case(string: str) -> str:
+    new_string = []
+    string_len = len(string)
+    for i, letter in enumerate(string):
+        if letter.isupper() and i != 0 and i != string_len - 1 and (string[i-1].islower() or string[i+1].islower()):
+            new_string.append("_" + letter.lower())
+        else:
+            new_string.append(letter.lower())
+    return "".join(new_string)
+
+
 def from_string_data(b: bytes) -> tuple[str, int]:
     """
     Convert bytes from osu! String data type to utf8

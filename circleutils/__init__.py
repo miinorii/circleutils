@@ -1,2 +1,3 @@
 from .collection import Collection
-from .replay import Replay
+from .replay import OSRFile
+from .beatmap import OSUFile

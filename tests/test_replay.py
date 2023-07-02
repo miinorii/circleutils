@@ -1,5 +1,5 @@
 import unittest
-from circleutils import Replay
+from circleutils import OSRFile
 
 
 SAMPLE_REPLAY = "ressources/replay-osu_1278814_2481474922.osr"
@@ -7,7 +7,7 @@ SAMPLE_REPLAY = "ressources/replay-osu_1278814_2481474922.osr"
 
 class TestReplay(unittest.TestCase):
     def test_read(self):
-        replay = Replay.read(SAMPLE_REPLAY)
+        replay = OSRFile.read(SAMPLE_REPLAY)
         self.assertEqual(0, replay.count_50)
         self.assertEqual(0, replay.count_100)
         self.assertEqual(129, replay.count_300)
