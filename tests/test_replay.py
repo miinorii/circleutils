@@ -25,3 +25,7 @@ class TestReplay(unittest.TestCase):
         self.assertEqual(7605553, replay.seed)
         self.assertEqual(636557171420000000, replay.timestamp)
         self.assertEqual(20151228, replay.version)
+
+
+if __name__ == '__main__':
+    unittest.main()
