@@ -187,5 +187,29 @@ class TestSection(unittest.TestCase):
         self.assertEqual("L|73:338,1,60,2|2,0:0|0:0", beatmap.hit_objects.object_params[12])
 
 
+class TestHitObjectsFilter(unittest.TestCase):
+    def test_filter_by_slider(self):
+        beatmap = OSUFile.read(SAMPLE_V7_W1252)
+        slider_only = beatmap.hit_objects.filter_by_slider()
+
+        self.assertEqual(61, len(slider_only.x))
+        self.assertEqual(61, len(slider_only.y))
+        self.assertEqual(61, len(slider_only.type))
+        self.assertEqual(61, len(slider_only.type))
+        self.assertEqual(61, len(slider_only.object_params))
+        self.assertTrue(all(slider_only.type & 2 == 2))
+
+    def test_filter_by_spinner(self):
+        beatmap = OSUFile.read(SAMPLE_V7_W1252)
+        slider_only = beatmap.hit_objects.filter_by_spinner()
+
+        self.assertEqual(3, len(slider_only.x))
+        self.assertEqual(3, len(slider_only.y))
+        self.assertEqual(3, len(slider_only.type))
+        self.assertEqual(3, len(slider_only.type))
+        self.assertEqual(3, len(slider_only.object_params))
+        self.assertTrue(all(slider_only.type & 8 == 8))
+
+
 if __name__ == '__main__':
     unittest.main()
