@@ -145,14 +145,14 @@ def read_metadata_section(section: list[str]) -> MetadataSection:
 
 def read_colours_section(section: list[str]) -> dict[str, list[int]]:
     kv = read_kv_section(section)
-    return {k: v.split(",") for k, v in kv.items()}
+    return {k: v.replace(" ", "").split(",") for k, v in kv.items()}
 
 
 def read_editor_section(section: list[str]) -> EditorSection:
     kv = read_kv_section(section)
 
     if "bookmarks" in kv:
-        kv["bookmarks"] = kv["bookmarks"].split(",")
+        kv["bookmarks"] = kv["bookmarks"].replace(" ", "").split(",")
     return EditorSection(**kv)
 
 
