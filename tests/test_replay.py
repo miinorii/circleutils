@@ -2,7 +2,7 @@ import unittest
 from circleutils import OSRFile
 
 
-SAMPLE_REPLAY = "ressources/replay-osu_1278814_2481474922.osr"
+SAMPLE_REPLAY = "../ressources/replay-osu_1278814_2481474922.osr"
 
 
 class TestReplay(unittest.TestCase):

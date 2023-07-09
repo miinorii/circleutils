@@ -7,7 +7,7 @@ col = Collection(
 )
 
 # Read from file
-col = Collection.read("collection_sample.db")
+col = Collection.read("../ressources/collection_sample.db")
 
 print(col.date)
 print(col.content)

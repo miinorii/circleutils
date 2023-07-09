@@ -1,8 +1,8 @@
-from circleutils import Replay
+from circleutils import OSRFile
 
 
 # Read replay from file
-replay = Replay.read("replay-osu_1278814_2481474922.osr")
+replay = OSRFile.read("../ressources/replay-osu_1278814_2481474922.osr")
 
 print(replay.max_combo, replay.count_miss, replay.player_name, replay.seed)
 
