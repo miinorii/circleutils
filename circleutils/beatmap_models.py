@@ -12,14 +12,14 @@ class GeneralSection(BaseModel):
     audio_hash: str | None = None
     preview_time: int = -1
     countdown: int = 1
-    sample_set: Literal["Normal", "Soft", "Drum"] = "Normal"
+    sample_set: Literal["Normal", "Soft", "Drum"] | None = "Normal"
     stack_leniency: float = 0.7
-    mode: GameModeInt
+    mode: GameModeInt = 0
     letterbox_in_breaks: bool = False
     story_fire_front: bool = True
     use_skin_sprites: bool = False
     always_show_playfield: bool = False
-    overlay_position: Literal["NoChange", "Below", "Above"] = "NoChange"
+    overlay_position: Literal["NoChange", "Below", "Above"] | None = "NoChange"
     skin_preference: str | None = None
     epilepsy_warning: bool = False
     countdown_offset: int = 0

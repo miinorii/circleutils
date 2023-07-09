@@ -8,7 +8,6 @@ from .hitobject import Spinner
 from .hitobject_models import SpinnerData
 from .types import GameplayMods
 from pydantic import BaseModel
-from tarfile import TarInfo
 import numpy as np
 import io
 import json
@@ -26,8 +25,8 @@ class OSUFile(BaseModel):
     hit_objects: HitObjectsSection
 
     @classmethod
-    def read(cls, filepath: str | io.BufferedReader | TarInfo) -> OSUFile:
-        if isinstance(filepath, (io.BufferedReader, TarInfo)):
+    def read(cls, filepath: str | io.BufferedReader) -> OSUFile:
+        if isinstance(filepath, (io.BufferedReader)):
             content = filepath.read()
         else:
             with open(filepath, "rb") as f:
@@ -57,7 +56,7 @@ class OSUFile(BaseModel):
         version = int(content[0].split("v")[-1])
 
         start, end = linespan["[General]"]
-        general_section = read_kv_section(content[start:end])
+        general_section = read_general_section(content[start:end])
 
         if "[Editor]" in linespan:
             start, end = linespan["[Editor]"]
@@ -126,6 +125,14 @@ def read_kv_section(section: list[str]) -> dict[str, str]:
 
         kv[convert_to_snake_case(key)] = value
     return kv
+
+
+def read_general_section(section: list[str]) -> GeneralSection:
+    kv = read_kv_section(section)
+
+    if "sample_set" in kv and kv["sample_set"] == "None":
+        kv["sample_set"] = None
+    return GeneralSection(**kv)
 
 
 def read_metadata_section(section: list[str]) -> MetadataSection:
