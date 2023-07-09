@@ -74,10 +74,17 @@ class Spinner:
     def calc_spinner_data(start_time: np.ndarray,
                           end_time: np.ndarray,
                           base_od: float,
-                          mods_combination: list[list[GameplayMods]]) -> list[SpinnerData]:
+                          mods_combination: list[list[GameplayMods]] | list[GameplayMods] | None = None) -> list[SpinnerData]:
+        if not mods_combination:
+            mods_iterable = [[]]
+        elif isinstance(mods_combination[0], str):
+            mods_iterable = [mods_combination]
+        else:
+            mods_iterable = mods_combination
+
         data = []
         length = Spinner.calc_length(start_time, end_time)
-        for mods in mods_combination:
+        for mods in mods_iterable:
             adjust_time = Spinner.calc_adjust_time(mods)
             accel_max, accel_adjusted = Spinner.calc_accel(length, adjust_time)
             rot_ratio = Spinner.calc_rotation_ratio(base_od, mods)

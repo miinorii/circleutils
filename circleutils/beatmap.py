@@ -98,7 +98,7 @@ class OSUFile(BaseModel):
             hit_objects=hit_objects
         )
 
-    def get_spinner_data(self, mods_combination: list[list[GameplayMods]]) -> list[SpinnerData]:
+    def get_spinner_data(self, mods_combination: list[list[GameplayMods]] | list[GameplayMods] | None = None) -> list[SpinnerData]:
         spinners = self.hit_objects.filter_by_spinner()
         if spinners.empty:
             return []
