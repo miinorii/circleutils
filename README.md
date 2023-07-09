@@ -3,6 +3,8 @@ circleutils
 
 Collection of tools for osu! related file manipulation
 
+Take a look at the "examples" folder for real-world applications
+
 Main features
 -------------
 
