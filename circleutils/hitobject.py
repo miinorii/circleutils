@@ -1,5 +1,5 @@
 from .types import GameplayMods
-from .hitobject_models import SpinnerData
+from .hitobject_models import SpinnerData, SliderData, ComboData
 import numpy as np
 
 
@@ -107,3 +107,109 @@ class Spinner:
                 "odd": odd_rot_req
             }))
         return data
+
+
+class TimingPoint:
+    @staticmethod
+    def get_hitobject_beatlength_and_slider_vm(hitobjects_time: np.ndarray,
+                                               tp_time: np.ndarray,
+                                               tp_beatlength: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        # Fix for maps with hitobjects defined before timing points
+        target = hitobjects_time.copy()  # do not mutate at_time
+        target[target < tp_time[0]] = tp_time[0]
+
+        beatlength_list = []
+        slider_vm_list = []
+
+        for x in target:
+            slider_vm = -100
+            current_beatlength = 0
+            last_beat_length_idx = -1
+
+            range_mask = tp_time <= x
+            type_mask = tp_beatlength[range_mask] > 0
+
+            if any(type_mask):
+                current_beatlength = tp_beatlength[range_mask][type_mask][-1]
+                last_beat_length_idx = np.where(type_mask == 1)[0][-1]
+
+            if any(~type_mask) and np.where(~type_mask == 1)[0][-1] > last_beat_length_idx:
+                slider_vm = tp_beatlength[range_mask][~type_mask][-1]
+
+            beatlength_list.append(current_beatlength)
+            slider_vm_list.append(slider_vm)
+        return np.array(beatlength_list), np.array(slider_vm_list)
+
+
+class Slider:
+    @staticmethod
+    def calc_slider_duration(slider_vm: np.ndarray, length: np.ndarray,
+                             beatlength: np.ndarray, slides: np.ndarray,
+                             slider_multiplier: float) -> np.ndarray:
+        # Notice: The slider's length can be used to determine the time it takes to complete the slider. length / (SliderMultiplier * 100 * SV) * beatLength tells how many milliseconds it takes to complete one slide of the slider (where SV is the slider velocity multiplier given by the effective inherited timing point, or 1 if there is none).
+        return (np.clip(np.abs(slider_vm), 10, 1000) * length * beatlength / (slider_multiplier * 10000)) * slides
+
+    @staticmethod
+    def calc_tick_duration(beatlength: np.ndarray,
+                           slider_vm: np.ndarray,
+                           slider_tick_rate: float,
+                           beatmap_version: int) -> np.ndarray:
+        tick_duration = beatlength / slider_tick_rate
+        if beatmap_version < 8:
+            tick_duration = tick_duration * (np.clip(np.abs(slider_vm), 10, 1000) / 100)
+        return tick_duration
+
+    @staticmethod
+    def calc_tick_count(slider_duration: np.ndarray, tick_duration: np.ndarray, slides: np.ndarray) -> np.ndarray:
+        # For easier debugging
+        # t = slider_duration / slides - tick_duration
+        # total = []
+        # for i, x in enumerate(t):
+        #     current_tick_duration = tick_duration[i]
+        #     tics = 0
+        #     while x >= 10:
+        #         tics += 1
+        #         x -= current_tick_duration
+        #     total.append(tics)
+        # total = np.array(total)
+        # return total + total * (slides - 1)
+        t = slider_duration / slides - tick_duration
+        ticks = np.maximum(0, np.ceil((10 - t) / -tick_duration))
+        ticks += ticks * (slides - 1)
+        return ticks.astype(int)
+
+    @staticmethod
+    def calc_slider_data(relative_beatlength: np.ndarray,
+                         vm: np.ndarray,
+                         slides: np.ndarray,
+                         length: np.ndarray,
+                         multiplier: float,
+                         tick_rate: float,
+                         version: int) -> SliderData:
+        slider_duration = Slider.calc_slider_duration(
+            vm, length,
+            relative_beatlength, slides,
+            multiplier
+        )
+        tick_duration = Slider.calc_tick_duration(
+            relative_beatlength, vm,
+            tick_rate,
+            version
+        )
+        tick_count = Slider.calc_tick_count(slider_duration, tick_duration, slides)
+        return SliderData(
+            slides=slides,
+            length=length,
+            slider_duration=slider_duration,
+            tick_duration=tick_duration,
+            tick_count=tick_count
+        )
+
+
+def calc_combo_data(slider_mask: np.ndarray, tick_count: np.ndarray, slides: np.ndarray) -> ComboData:
+    combo_given = np.ones(slider_mask.shape, dtype=int)
+    if any(slider_mask):
+        combo_given[slider_mask] = tick_count + slides + 1
+    at_combo = np.concatenate(([0], combo_given.cumsum()[:-1]))
+    max_combo = combo_given.sum()
+    return ComboData(combo_given=combo_given, at_combo=at_combo, max_combo=max_combo)

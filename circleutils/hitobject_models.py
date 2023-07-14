@@ -18,3 +18,23 @@ class SpinnerData(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
+
+class SliderData(BaseModel):
+    slides: np.ndarray
+    length: np.ndarray
+    slider_duration: np.ndarray
+    tick_duration: np.ndarray
+    tick_count: np.ndarray
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
+class ComboData(BaseModel):
+    combo_given: np.ndarray
+    at_combo: np.ndarray
+    max_combo: int
+
+    class Config:
+        arbitrary_types_allowed = True

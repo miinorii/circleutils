@@ -4,8 +4,8 @@ from .beatmap_models import (
     GeneralSection, DifficultySection, MetadataSection,
     EditorSection, HitObjectsSection, TimingPointsSection
 )
-from .hitobject import Spinner
-from .hitobject_models import SpinnerData
+from .hitobject import Spinner, TimingPoint, Slider, calc_combo_data
+from .hitobject_models import SpinnerData, SliderData, ComboData
 from .types import GameplayMods
 from pydantic import BaseModel
 import numpy as np
@@ -106,6 +106,32 @@ class OSUFile(BaseModel):
             spinners.object_params,
             self.difficulty.overall_difficulty,
             mods_combination
+        )
+
+    def get_slider_data(self) -> SliderData:
+        sliders = self.hit_objects.filter_by_slider()
+        object_params_split = np.char.split(sliders.object_params, ",")
+        slides = np.array([x[1] for x in object_params_split], dtype=int)
+        length = np.array([x[2] for x in object_params_split], dtype=float)
+        relative_beatlength, vm = TimingPoint.get_hitobject_beatlength_and_slider_vm(
+            sliders.time,
+            self.timing_points.time,
+            self.timing_points.beat_length
+        )
+        return Slider.calc_slider_data(
+            relative_beatlength,
+            vm, slides, length,
+            self.difficulty.slider_multiplier,
+            self.difficulty.slider_tick_rate,
+            self.version
+        )
+
+    def get_combo_data(self) -> ComboData:
+        slider_data = self.get_slider_data()
+        return calc_combo_data(
+            self.hit_objects.slider_mask,
+            slider_data.tick_count,
+            slider_data.slides
         )
 
 
