@@ -25,11 +25,11 @@ class OSUFile(BaseModel):
     hit_objects: HitObjectsSection
 
     @classmethod
-    def read(cls, filepath: str | io.BufferedReader) -> OSUFile:
-        if isinstance(filepath, (io.BufferedReader)):
-            content = filepath.read()
+    def read(cls, file: str | io.BufferedReader) -> OSUFile:
+        if hasattr(file, "read") and callable(file.read):
+            content = file.read()
         else:
-            with open(filepath, "rb") as f:
+            with open(file, "rb") as f:
                 content = f.read()
 
         encoding = json.detect_encoding(content)
