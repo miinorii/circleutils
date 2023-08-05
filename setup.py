@@ -3,7 +3,10 @@ from setuptools import setup
 setup(
     name="circleutils",
     author="miinorii",
-    version="2023.7.15",
+    version="2023.8.5",
+    description="Collection of tools for osu! related file manipulation",
+    long_description="Collection of tools for osu! related file manipulation",
+    url="https://github.com/miinorii/circleutils",
     packages=["circleutils"],
     install_requires=[
         "pydantic>=2.1.1",

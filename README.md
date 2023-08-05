@@ -10,11 +10,15 @@ Main features
 
 - Reading and writing legacy collection files
 - Reading replay files (.osr)
-- Leeway calculation
+- Spinner leeway calculation
 - [WIP] Reading beatmap files (.osu)
 
 Installation
 ------------
+
+```bash
+$ pip install circleutils
+```
 
 Development setup
 ```bash
