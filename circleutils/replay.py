@@ -4,7 +4,7 @@ from .types import GameModeInt
 from pydantic import BaseModel
 import lzma
 import numpy as np
-import pandas as pd
+import polars as pl
 
 
 class ReplayData(BaseModel):
@@ -16,8 +16,8 @@ class ReplayData(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-    def to_dataframe(self) -> pd.DataFrame:
-        return pd.DataFrame(
+    def to_dataframe(self) -> pl.DataFrame:
+        return pl.DataFrame(
             data={
                 "w": self.w,
                 "x": self.x,
